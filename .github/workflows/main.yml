@@ -1,22 +1,16 @@
-name: docker CI
+name: manual deploy
+
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      env:
+        description: "Environment to deploy to"
+        required: true
+        default: "dev"
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
-        uses: actions/checkout@v4
-
-      - name: login to docker hub
-        run: |
-          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-      - name: build docker image
-        run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/myapp:latest .
-      - name: push docker image
-        run: |
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/myapp:latest
+      - name: Deploy
+        run: echo "Deploying to ${{ inputs.env }}"
