@@ -1,13 +1,26 @@
-name: first-workflow
-on: 
+name: python CI
+on:
   push:
     branches:
       - main
 
 jobs:
-  examole-jops:
+  test:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, 3.10, 3.11, 3.12]
     steps:
-      - name: print a welcome massage
-        run: echo "welcome to our first GitHub-action"
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: install dependencies
+        run: pip install -r requirements.txt
+
+      - name: run tests
+        run: pytest
